@@ -1,0 +1,32 @@
+---
+# Modify Nodes to run cluster behind a proxy
+# This script switches the cluster to "proxy" environment
+
+  - name: add Proxy-ENV to /etc/environment
+    lineinfile:
+     dest: /etc/environment
+     state: present
+     regexp: "{{ item.regexp }}"
+     line: "{{ item.line}}"
+    with_items:
+     - { regexp: '# Proxy Einstellungen',line: '# Proxy Einstellungen - mit Ansible erstellt' }
+     - { regexp: 'export http_proxy=',   line: 'export http_proxy={{proxy}}' }
+     - { regexp: 'export https_proxy=',  line: 'export https_proxy={{proxy}}' }
+     - { regexp: 'export ftp_proxy=',    line: 'export ftp_proxy={{proxy}}' }
+     - { regexp: 'export HTTP_PROXY=',   line: 'export HTTP_PROXY={{proxy}}' }
+     - { regexp: 'export HTTPS_PROXY=',  line: 'export HTTPS_PROXY={{proxy}}' }
+     - { regexp: 'export FTP_PROXY=',    line: 'export FTP_PROXY={{proxy}}' }
+#     - { regexp: 'export NO_PROXY=',     line: 'export NO_PROXY={{noproxy}}' }
+
+  - name: make sure the 80proxy file exists or create it
+    file: path=/etc/apt/apt.conf.d/80proxy state=touch
+
+  - name: add lines to 80proxy
+    lineinfile:
+     dest: /etc/apt/apt.conf.d/80proxy
+     state: present
+     regexp: "{{ item.regexp }}"
+     line: "{{ item.line}}"
+    with_items:
+     - { regexp: 'Acquire::http::proxy ',  line: 'Acquire::http::proxy "{{proxy}}";' }
+     - { regexp: 'Acquire::https::proxy ', line: 'Acquire::https::proxy "{{proxy}}";' }

@@ -1,0 +1,5 @@
+---
+# Needed by Kubernetes to manipulate linux bridge
+
+  - name: Install bridge-utils
+    apt: name=bridge-utils state=latest

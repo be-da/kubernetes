@@ -1,0 +1,9 @@
+---
+# Tasks for download Kubernetes (clone kubernetes git repo)
+# only needed by remote-control pc which handles cluster
+
+  - name: create directory
+    file: path={{kub_git_dest}} state=directory
+
+  - name: clone git repo
+    git: repo={{kub_repo}} dest={{kub_git_dest}} clone=yes update=yes

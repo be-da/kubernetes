@@ -4,5 +4,4 @@
     become: yes
     become_method: sudo
     roles:
-      - { role: '../roles/docker' }
-      - { role: '../roles/bridge-utils' }
+      - { role: '../roles/proxy/' }

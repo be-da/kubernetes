@@ -1,0 +1,13 @@
+[cluster]
+192.168.33.11
+192.168.33.12
+192.168.33.13
+192.168.33.14
+192.168.33.15
+
+[cluster:vars]
+repo=deb https://apt.dockerproject.org/repo ubuntu-trusty main
+proxy=http://10.95.61.85:3128
+#kub_repo=ssh://git@127.0.0.1:1236/kubernetes/kubernetes.git
+kub_repo=https://github.com/kubernetes/kubernetes.git
+kub_git_dest=~/Programme
