@@ -1,0 +1,23 @@
+---
+# Configure the Kubernetes services on the minions
+
+ - name: update /etc/etcd/etcd.conf on master
+   lineinfile:
+    dest: /etc/kubernetes/kubelet
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line}}"
+   with_items:
+    - { regexp: 'KUBELET_ADDRESS=',  line: 'KUBELET_ADDRESS="--address=0.0.0.0"' }
+    - { regexp: 'KUBELET_PORT=',  line: 'KUBELET_PORT="--port=10250"' }
+#    - { regexp: 'KUBELET_HOSTNAME=',  line: 'KUBELET_HOSTNAME="--hostname-override=centos-minion{{ ansible_eth1.ipv4.address }}"' }
+    - { regexp: 'KUBELET_HOSTNAME=',  line: 'KUBELET_HOSTNAME="--hostname-override={{ansible_dns.search[0]}}"' }
+    - { regexp: 'KUBELET_API_SERVER=',  line: 'KUBELET_API_SERVER="--api-servers=http://centos-master:8080"' }
+    - { regexp: 'KUBELET_ARGS=',  line: 'KUBELET_ARGS=""' }
+
+ - name: start services on minions
+   service: name={{item}}.service enabled=yes state=restarted
+   with_items:
+      - kube-proxy
+      - docker
+      - kubelet

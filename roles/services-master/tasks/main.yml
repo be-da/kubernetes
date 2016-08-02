@@ -1,0 +1,36 @@
+---
+# Configure the Kubernetes services on the master
+
+ - name: update /etc/etcd/etcd.conf on master
+   lineinfile:
+    dest: /etc/etcd/etcd.conf
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line}}"
+   with_items:
+    - { regexp: 'ETCD_NAME=',  line: 'ETCD_NAME=default' }
+    - { regexp: 'ETCD_DATA_DIR=',  line: 'ETCD_DATA_DIR="/var/lib/etcd/default.etcd"' }
+    - { regexp: 'ETCD_LISTEN_CLIENT_URLS=',  line: 'ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"' }
+    - { regexp: 'ETCD_ADVERTISE_CLIENT_URLS=',  line: 'ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379"' }
+
+
+ - name: update /etc/kubernetes/apiserver on master
+   lineinfile:
+    dest: /etc/kubernetes/apiserver
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line}}"
+   with_items:
+    - { regexp: 'KUBE_API_ADDRESS=',  line: 'KUBE_API_ADDRESS="--address=0.0.0.0"' }
+    - { regexp: 'KUBE_API_PORT=',  line: 'KUBE_API_PORT="--port=8080"' }
+    - { regexp: 'KUBELET_PORT=',  line: 'KUBELET_PORT="--kubelet-port=10250"' }
+    - { regexp: 'KUBE_SERVICE_ADDRESSES=',  line: 'KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=10.254.0.0/16"' }
+    - { regexp: 'KUBE_API_ARGS=',  line: 'KUBE_API_ARGS=""' }
+
+ - name: start services on the master
+   service: name={{item}}.service enabled=yes state=restarted
+   with_items:
+      - etcd
+      - kube-apiserver
+      - kube-controller-manager
+      - kube-scheduler

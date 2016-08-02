@@ -1,0 +1,14 @@
+---
+# Create the virt7-docker-common-release repo as explained on
+# http://kubernetes.io/docs/getting-started-guides/centos/centos_manual_config/
+  - name: Create virt7-docker-common-release repo-file
+    file: dest=/etc/yum.repos.d/virt7-docker-common-release.repo state=touch
+
+  - name: Create virt7-docker-common-release repo entry
+    blockinfile:
+      dest: /etc/yum.repos.d/virt7-docker-common-release.repo
+      block: |
+       [{{repo}}]
+       name={{repo}}
+       baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+       gpgcheck=0

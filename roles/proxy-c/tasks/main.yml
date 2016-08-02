@@ -1,9 +1,6 @@
 ---
 # Modify Nodes to run cluster behind a proxy
-# This script switches the cluster to "no-proxy" environment
-
-  - name: make sure the 80proxy file does not exist or delete it
-    file: path=/etc/apt/apt.conf.d/80proxy state=absent
+# This script switches the cluster to "proxy" environment
 
   - name: add Proxy-ENV to /etc/environment
     lineinfile:
@@ -19,4 +16,13 @@
      - { regexp: 'export HTTP_PROXY=',   line: '#export HTTP_PROXY={{proxy}}' }
      - { regexp: 'export HTTPS_PROXY=',  line: '#export HTTPS_PROXY={{proxy}}' }
      - { regexp: 'export FTP_PROXY=',    line: '#export FTP_PROXY={{proxy}}' }
-#     - { regexp: 'export NO_PROXY=',     line: '#export NO_PROXY={{noproxy}}' }
+     - { regexp: 'export NO_PROXY=',     line: '#export NO_PROXY={{noproxy}}' }
+
+  - name: add line to yum.conf
+    lineinfile:
+     dest: /etc/yum.conf
+     state: present
+     regexp: "{{ item.regexp }}"
+     line: "{{ item.line}}"
+    with_items:
+     - { regexp: 'proxy=',  line: '#proxy={{proxy}}' }

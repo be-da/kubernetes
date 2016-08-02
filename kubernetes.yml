@@ -1,5 +1,5 @@
 ---
-  - hosts: [cluster]
+  - hosts: [cluster-u]
     remote_user: vagrant
     become: yes
     become_method: sudo

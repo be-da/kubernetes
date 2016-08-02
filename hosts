@@ -1,13 +1,32 @@
-[cluster]
+[cluster-u]
 192.168.33.11
 192.168.33.12
 192.168.33.13
 192.168.33.14
 192.168.33.15
 
-[cluster:vars]
+[cluster-c:children]
+centos-master
+centos-minion
+
+[centos-master]
+192.168.33.16
+
+[centos-minion]
+192.168.33.17
+192.168.33.18
+192.168.33.19
+192.168.33.20
+
+[cluster-u:vars]
 repo=deb https://apt.dockerproject.org/repo ubuntu-trusty main
 proxy=http://10.95.61.85:3128
 #kub_repo=ssh://git@127.0.0.1:1236/kubernetes/kubernetes.git
 kub_repo=https://github.com/kubernetes/kubernetes.git
 kub_git_dest=~/Programme
+
+[cluster-c:vars]
+repo=virt7-docker-common-release
+baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/
+proxy=http://10.95.61.85:3128
+noproxy=127.0.0.1,192.*,10.*,localhost,*.hs-kalrsruhe.de

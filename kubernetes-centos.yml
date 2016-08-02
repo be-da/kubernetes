@@ -1,0 +1,24 @@
+---
+  - hosts: [cluster-c]
+    remote_user: vagrant
+    become: yes
+    become_method: sudo
+    roles:
+      - { role: '../roles/proxy-c'}
+      - { role: '../roles/repo' }
+      - { role: '../roles/kubernetes'}
+      - { role: '../roles/firewall'}
+
+  - hosts: [centos-master]
+    remote_user: vagrant
+    become: yes
+    become_method: sudo
+    roles:
+      - { role: '../roles/services-master'}
+
+  - hosts: [centos-minion]
+    remote_user: vagrant
+    become: yes
+    become_method: sudo
+    roles:
+      - { role: '../roles/services-minion'}

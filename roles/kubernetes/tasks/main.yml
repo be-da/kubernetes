@@ -1,0 +1,31 @@
+---
+# Tasks for installing Kubernetes and etcd,docker,cadvisor
+
+ - name: Run yum update
+   yum: name=* state=latest
+
+ - name: Install Kubernets with dependencies
+   yum: name=kubernetes,etcd enablerepo={{repo}} state=latest
+
+ - name: update /etc/hosts on all machines
+   blockinfile:
+     dest: /etc/hosts
+     block: |
+      192.168.33.16     centos-master
+      192.168.33.17     centos-min1
+      192.168.33.18     centos-min2
+      192.168.33.19     centos-min3
+      192.168.33.20     centos-min4
+
+ - name: update /etc/kubernetes/config on all machines
+   lineinfile:
+    dest: /etc/kubernetes/config
+    state: present
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line}}"
+   with_items:
+    - { regexp: 'KUBE_ETCD_SERVERS=',  line: 'KUBE_ETCD_SERVERS="--etcd-servers=http://centos-master:2379"' }
+    - { regexp: 'KUBE_LOGTOSTDERR=',  line: 'KUBE_LOGTOSTDERR="--logtostderr=true"' }
+    - { regexp: 'KUBE_LOG_LEVEL=',  line: 'KUBE_LOG_LEVEL="--v=0"' }
+    - { regexp: 'KUBE_ALLOW_PRIV=',  line: 'KUBE_ALLOW_PRIV="--allow-privileged=false"' }
+    - { regexp: 'KUBE_MASTER=',  line: 'KUBE_MASTER="--master=http://centos-master:8080"' }

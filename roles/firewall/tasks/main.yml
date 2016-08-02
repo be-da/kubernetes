@@ -1,0 +1,5 @@
+---
+# Stop and disable firewall on each node
+
+  - name: disable firewalld on each node
+    service: name=firewalld enabled=no state=stopped
